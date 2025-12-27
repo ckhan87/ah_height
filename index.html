@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>阿米身高管理 Pro Max (双语报告+补救)</title>
+    <title>阿米身高管理 (Google Calendar 同步版)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -22,43 +22,22 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
-        /* Nav Tabs */
         .nav-tab { border-bottom: 3px solid transparent; color: #64748b; transition: all 0.3s ease; white-space: nowrap; font-size: 0.85rem; }
         .nav-tab.active { border-bottom: 3px solid #0ea5e9; color: #0ea5e9; font-weight: 700; }
 
         /* Full Screen Modal */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6); /* Slate 900 with opacity */
-            backdrop-filter: blur(4px);
-            z-index: 100;
-            display: none;
-            justify-content: center;
-            align-items: center;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            z-index: 100; display: none; justify-content: center; align-items: center;
         }
         .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease-out; }
         .modal-content {
-            background: white;
-            width: 95%; max-width: 800px; height: 90%;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            display: flex; flex-direction: column;
-            overflow: hidden;
+            background: white; width: 95%; max-width: 800px; height: 90%;
+            border-radius: 16px; display: flex; flex-direction: column; overflow: hidden;
             animation: slideUp 0.3s ease-out;
         }
         
-        /* Markdown Styling */
-        .prose { max-width: none; color: #334155; }
-        .prose h3 { color: #0f172a; font-weight: 700; margin-top: 1.5em; margin-bottom: 0.5em; font-size: 1.25rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3em; }
-        .prose h4 { color: #1e293b; font-weight: 600; margin-top: 1.2em; margin-bottom: 0.4em; font-size: 1.1rem; }
-        .prose ul { list-style-type: disc; padding-left: 1.2em; margin-bottom: 1em; }
-        .prose li { margin-bottom: 0.4em; line-height: 1.6; }
-        .prose strong { color: #0369a1; font-weight: 700; }
-        .prose p { margin-bottom: 1em; line-height: 1.7; }
-        
-        /* Checkbox */
-        .symptom-checkbox:checked + div { background-color: #fee2e2; border-color: #ef4444; color: #b91c1c; }
-
         .loader {
             border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #3498db;
             width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block;
@@ -73,8 +52,10 @@
     <!-- Top Bar -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div class="flex justify-between items-center px-4 h-14">
-            <div class="font-bold text-sky-600 text-lg">AhMi<span class="text-slate-600">Growth</span> <span class="text-[10px] bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full align-middle">Pro Max</span></div>
-            <button onclick="toggleSettings()" class="p-2 text-slate-400 hover:text-sky-600">⚙️</button>
+            <div class="font-bold text-sky-600 text-lg">AhMi<span class="text-slate-600">Growth</span> <span class="text-[10px] bg-green-100 text-green-800 px-2 py-0.5 rounded-full align-middle">G-Cal Sync</span></div>
+            <div class="flex gap-2">
+                <button onclick="toggleSettings()" class="p-2 text-slate-400 hover:text-sky-600">⚙️</button>
+            </div>
         </div>
         
         <div class="flex text-sm font-medium border-t border-slate-100 bg-white shadow-sm overflow-x-auto scrollbar-hide">
@@ -100,26 +81,23 @@
 
         <!-- ========================= TAB 1: TRACKER ========================= -->
         <div id="view-tracker" class="space-y-6 animate-fade-in">
-            <!-- AI Control Center (NEW DESIGN) -->
+            <!-- AI Control Center -->
             <div class="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-xl p-5 text-white shadow-lg">
                 <div class="flex justify-between items-start mb-4">
                     <div>
                         <h2 class="text-xl font-bold">🤖 AI 生长顾问</h2>
                         <p class="text-xs text-indigo-100 opacity-90">基于 Simpang Ampat 环境 & 遗传数据</p>
                     </div>
-                    <div class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold">
-                        目标 185cm
-                    </div>
+                    <div class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold">目标 185cm</div>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-3">
-                    <button onclick="askGeminiReport('progress')" id="btn-progress" class="bg-white text-indigo-700 hover:bg-indigo-50 py-3 rounded-lg font-bold shadow-md text-sm flex flex-col items-center justify-center gap-1 transition transform active:scale-95">
+                    <button onclick="askGeminiReport('progress')" id="btn-progress" class="bg-white text-indigo-700 hover:bg-indigo-50 py-3 rounded-lg font-bold shadow-md text-sm flex flex-col items-center justify-center gap-1 transition active:scale-95">
                         <span class="text-xl">📈</span>
                         <span>分析进度报告</span>
                         <span class="text-[9px] text-indigo-400 font-normal">双语 • 深度分析</span>
                     </button>
-                    
-                    <button onclick="askGeminiReport('rescue')" id="btn-rescue" class="bg-rose-500 text-white hover:bg-rose-600 py-3 rounded-lg font-bold shadow-md text-sm flex flex-col items-center justify-center gap-1 transition transform active:scale-95 border border-rose-400">
+                    <button onclick="askGeminiReport('rescue')" id="btn-rescue" class="bg-rose-500 text-white hover:bg-rose-600 py-3 rounded-lg font-bold shadow-md text-sm flex flex-col items-center justify-center gap-1 transition active:scale-95 border border-rose-400">
                         <span class="text-xl">🚀</span>
                         <span>快速补救建议</span>
                         <span class="text-[9px] text-rose-100 font-normal">落后追赶 • 紧急方案</span>
@@ -134,20 +112,14 @@
                     <span id="currentDateDisplay" class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500"></span>
                 </div>
                 <div class="grid grid-cols-3 gap-3 mb-3">
-                    <div>
-                        <label class="text-[10px] text-slate-500 uppercase">日期</label>
-                        <input type="date" id="recordDate" class="w-full p-2 border rounded text-sm">
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-slate-500 uppercase">身高 (cm)</label>
-                        <input type="number" id="recordHeight" step="0.1" placeholder="110" class="w-full p-2 border rounded text-sm font-bold text-indigo-600">
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-slate-500 uppercase">体重 (kg)</label>
-                        <input type="number" id="recordWeight" step="0.1" placeholder="18" class="w-full p-2 border rounded text-sm">
-                    </div>
+                    <div><label class="text-[10px] text-slate-500 uppercase">日期</label><input type="date" id="recordDate" class="w-full p-2 border rounded text-sm"></div>
+                    <div><label class="text-[10px] text-slate-500 uppercase">身高 (cm)</label><input type="number" id="recordHeight" step="0.1" placeholder="110" class="w-full p-2 border rounded text-sm font-bold text-indigo-600"></div>
+                    <div><label class="text-[10px] text-slate-500 uppercase">体重 (kg)</label><input type="number" id="recordWeight" step="0.1" placeholder="18" class="w-full p-2 border rounded text-sm"></div>
                 </div>
-                <button onclick="addRecord()" class="w-full bg-slate-800 text-white py-2 rounded-lg font-bold shadow text-sm">保存并更新图表</button>
+                <button onclick="addRecord()" class="w-full bg-slate-800 text-white py-2 rounded-lg font-bold shadow text-sm flex justify-center items-center gap-2">
+                    <span>保存并同步 Google Calendar</span>
+                    <span class="text-xs bg-white/20 px-1 rounded">☁️</span>
+                </button>
             </div>
 
             <!-- Charts -->
@@ -162,26 +134,23 @@
             
             <!-- History Table -->
             <div class="glass-panel rounded-xl overflow-hidden border border-slate-200">
-                <div class="bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700">历史记录</div>
-                <div class="max-h-48 overflow-y-auto">
+                <div class="bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 flex justify-between">
+                    <span>历史记录</span>
+                    <span class="text-xs font-normal text-slate-400">点击 📅 图标补传日历</span>
+                </div>
+                <div class="max-h-56 overflow-y-auto">
                     <table class="w-full text-xs text-left" id="recordsTableBody"></table>
                 </div>
             </div>
         </div>
 
-        <!-- ========================= TAB 2: HEALTH (生病记录) ========================= -->
+        <!-- ========================= TAB 2: HEALTH ========================= -->
         <div id="view-health" class="space-y-6 hidden animate-fade-in">
             <div class="bg-red-50 p-4 rounded-xl border border-red-100">
                 <h2 class="font-bold text-red-800 mb-2">🤒 生病记录仪</h2>
                 <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div>
-                        <label class="text-[10px] text-slate-500 uppercase">开始</label>
-                        <input type="date" id="sickStartDate" class="w-full p-2 border border-red-200 rounded text-sm bg-white">
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-slate-500 uppercase">康复</label>
-                        <input type="date" id="sickEndDate" class="w-full p-2 border border-red-200 rounded text-sm bg-white">
-                    </div>
+                    <div><label class="text-[10px] text-slate-500 uppercase">开始</label><input type="date" id="sickStartDate" class="w-full p-2 border border-red-200 rounded text-sm bg-white"></div>
+                    <div><label class="text-[10px] text-slate-500 uppercase">康复</label><input type="date" id="sickEndDate" class="w-full p-2 border border-red-200 rounded text-sm bg-white"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mb-4">
                     <label class="cursor-pointer"><input type="checkbox" class="hidden symptom-checkbox" value="咳嗽"><div class="p-2 border border-slate-200 rounded text-center text-sm text-slate-600 bg-white hover:bg-slate-50">😷 咳嗽</div></label>
@@ -189,7 +158,10 @@
                     <label class="cursor-pointer"><input type="checkbox" class="hidden symptom-checkbox" value="发烧"><div class="p-2 border border-slate-200 rounded text-center text-sm text-slate-600 bg-white hover:bg-slate-50">🤒 发烧</div></label>
                     <label class="cursor-pointer"><input type="checkbox" class="hidden symptom-checkbox" value="鼻塞"><div class="p-2 border border-slate-200 rounded text-center text-sm text-slate-600 bg-white hover:bg-slate-50">👃 鼻塞</div></label>
                 </div>
-                <button onclick="addSickRecord()" class="w-full bg-red-500 text-white py-2 rounded-lg font-bold shadow text-sm">保存记录</button>
+                <button onclick="addSickRecord()" class="w-full bg-red-500 text-white py-2 rounded-lg font-bold shadow text-sm flex justify-center items-center gap-2">
+                    <span>保存并同步 Google Calendar</span>
+                    <span class="text-xs bg-white/20 px-1 rounded">☁️</span>
+                </button>
             </div>
             <div class="glass-panel rounded-xl overflow-hidden border border-slate-200">
                 <div class="bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700">历史记录</div>
@@ -204,17 +176,10 @@
                 <p class="text-xs text-orange-100">睡前5分钟 = 10倍生长激素</p>
             </div>
             <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-                <div class="bg-amber-50 p-3 border-b border-amber-100"><h3 class="font-bold text-amber-800 text-sm">☀️ 睡醒唤醒 (3分钟)</h3></div>
+                <div class="bg-amber-50 p-3 border-b border-amber-100"><h3 class="font-bold text-amber-800 text-sm">☀️ 睡醒唤醒</h3></div>
                 <div class="p-4 space-y-4">
-                    <div class="flex gap-3"><div class="bg-amber-100 text-amber-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</div><p class="text-xs text-slate-600"><strong>全身延展:</strong> 躺在床上，手脚向相反方向用力拉伸 10秒。</p></div>
-                    <div class="flex gap-3"><div class="bg-amber-100 text-amber-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</div><p class="text-xs text-slate-600"><strong>侧弯拉伸:</strong> 站立，双手合十举过头，向左右弯腰成C字。</p></div>
-                </div>
-            </div>
-            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-                <div class="bg-indigo-50 p-3 border-b border-indigo-100"><h3 class="font-bold text-indigo-800 text-sm">🌙 睡前助长 (5分钟)</h3></div>
-                <div class="p-4 space-y-4">
-                    <div class="flex gap-3"><div class="bg-indigo-100 text-indigo-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</div><p class="text-xs text-slate-600"><strong>摸脚尖:</strong> 坐直腿伸直，手摸脚尖。保持 15秒 x 2次。</p></div>
-                    <div class="flex gap-3"><div class="bg-indigo-100 text-indigo-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</div><p class="text-xs text-slate-600"><strong>婴儿式:</strong> 跪姿趴下，放松脊柱。保持 30秒。</p></div>
+                    <div class="flex gap-3"><span class="bg-amber-100 text-amber-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</span><p class="text-xs text-slate-600"><strong>全身延展:</strong> 躺在床上，手脚向相反方向用力拉伸 10秒。</p></div>
+                    <div class="flex gap-3"><span class="bg-amber-100 text-amber-600 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</span><p class="text-xs text-slate-600"><strong>侧弯拉伸:</strong> 站立，双手合十举过头，向左右弯腰成C字。</p></div>
                 </div>
             </div>
             <div class="glass-panel p-4 rounded-xl border border-orange-200">
@@ -227,20 +192,15 @@
             </div>
         </div>
 
-        <!-- ========================= TAB 4: DIET ========================= -->
+        <!-- ========================= TAB 4 & 5: DIET & ROUTINE ========================= -->
         <div id="view-ai-diet" class="space-y-6 hidden animate-fade-in">
             <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl p-6 text-white shadow-lg">
                 <h2 class="text-xl font-bold mb-2">🍽️ AI 助长食谱</h2>
-                <button onclick="generateMealPlan()" id="btnGenMeal" class="w-full bg-white text-emerald-700 py-3 rounded-lg font-bold shadow-md flex justify-center items-center gap-2">
-                    <span>✨ 生成今日建议</span>
-                </button>
+                <button onclick="generateMealPlan()" id="btnGenMeal" class="w-full bg-white text-emerald-700 py-3 rounded-lg font-bold shadow-md flex justify-center items-center gap-2"><span>✨ 生成今日建议</span></button>
             </div>
-            <div id="mealPlanResult" class="hidden glass-panel p-5 rounded-xl border border-slate-200 prose prose-sm max-w-none prose-emerald">
-                <div id="mealContent" class="text-slate-700"></div>
-            </div>
+            <div id="mealPlanResult" class="hidden glass-panel p-5 rounded-xl border border-slate-200 prose prose-sm max-w-none prose-emerald"><div id="mealContent" class="text-slate-700"></div></div>
         </div>
 
-        <!-- ========================= TAB 5: ROUTINE ========================= -->
         <div id="view-routine" class="space-y-6 hidden animate-fade-in">
             <div class="bg-indigo-600 rounded-xl p-6 text-white shadow-lg">
                 <h2 class="text-xl font-bold mb-2">📅 智能日程</h2>
@@ -257,18 +217,33 @@
         <!-- ========================= FULL SCREEN MODAL ========================= -->
         <div id="fullScreenModal" class="modal-overlay">
             <div class="modal-content">
-                <!-- Header -->
                 <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                    <h2 id="modalTitle" class="text-xl font-bold text-slate-800">AI 深度报告</h2>
-                    <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-300 transition">✕</button>
+                    <h2 id="modalTitle" class="text-xl font-bold text-slate-800">AI 报告</h2>
+                    <button onclick="closeModal('fullScreenModal')" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 hover:bg-slate-300">✕</button>
                 </div>
-                <!-- Body (Scrollable) -->
-                <div id="modalBody" class="p-6 overflow-y-auto flex-1 bg-white prose prose-lg prose-indigo max-w-none">
-                    <!-- AI Content Injected Here -->
-                </div>
-                <!-- Footer -->
+                <div id="modalBody" class="p-6 overflow-y-auto flex-1 bg-white prose prose-lg prose-indigo max-w-none"></div>
                 <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-end">
-                    <button onclick="closeModal()" class="px-6 py-2 bg-slate-800 text-white rounded-lg font-medium text-sm hover:bg-slate-900">关闭</button>
+                    <button onclick="closeModal('fullScreenModal')" class="px-6 py-2 bg-slate-800 text-white rounded-lg font-medium text-sm">关闭</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ========================= GOOGLE CALENDAR SYNC MODAL ========================= -->
+        <div id="gcalModal" class="modal-overlay">
+            <div class="modal-content h-auto">
+                <div class="px-6 py-4 border-b border-slate-200 bg-green-50">
+                    <h2 class="text-lg font-bold text-green-800">📅 添加到 Google Calendar</h2>
+                </div>
+                <div class="p-6 bg-white text-sm text-slate-600">
+                    <p class="mb-4">数据已保存到本地。</p>
+                    <p class="mb-4">点击下方按钮将打开 Google Calendar，相关数据（身高/体重/病情）已自动填好，请点击右上角的 <b>"Save" (保存)</b> 即可。</p>
+                    <p class="text-xs text-slate-400">提示：如果您想与太太共享，请在 Google Calendar 中添加她为"Guest" (参与者)。</p>
+                    <a id="gcalLink" href="#" target="_blank" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg">
+                        🚀 立即跳转同步
+                    </a>
+                </div>
+                <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-end">
+                    <button onclick="closeModal('gcalModal')" class="px-4 py-2 bg-slate-200 text-slate-700 rounded text-sm">关闭</button>
                 </div>
             </div>
         </div>
@@ -283,7 +258,6 @@
         let sickRecords = [];
         let myChart, weightChart;
 
-        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('recordDate').value = today;
@@ -296,203 +270,77 @@
             switchMainTab('tracker');
         });
 
-        // --- TABS ---
-        function switchMainTab(tabId) {
-            document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
-            document.getElementById('nav-' + tabId).classList.add('active');
+        // --- GOOGLE CALENDAR LOGIC (WEB INTENTS) ---
+        function openGCalModal(url) {
+            document.getElementById('gcalLink').href = url;
+            document.getElementById('gcalModal').classList.add('open');
+        }
+
+        function createGCalLink(title, startDate, endDate, description) {
+            // Format dates for Google Calendar: YYYYMMDD
+            const formatGCalDate = (dateStr) => dateStr.replace(/-/g, '');
             
-            ['tracker', 'health', 'stretch', 'ai-diet', 'routine'].forEach(id => {
-                document.getElementById('view-' + id).classList.add('hidden');
-            });
-            document.getElementById('view-' + tabId).classList.remove('hidden');
-
-            if(tabId === 'tracker') {
-                if(myChart) myChart.resize();
-                if(weightChart) weightChart.resize();
-            }
-        }
-
-        // --- AI REPORT LOGIC (MODAL) ---
-        async function askGeminiReport(type) {
-            if (records.length === 0) return alert("请先录入身高体重数据");
+            const start = formatGCalDate(startDate);
+            // Google calendar end date is exclusive, so if single day, same as start. 
+            // If sickness range, usually end date + 1 day needed, but for simple link keeping same is safer for simplicity or handle strictly.
+            // For simple "All day", start=end works usually for single day events. 
+            const end = endDate ? formatGCalDate(endDate) : start; 
             
-            const apiKey = getApiKey();
-            const latest = records[records.length - 1];
+            const baseUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE";
+            const params = new URLSearchParams();
+            params.append('text', title);
+            params.append('dates', `${start}/${end}`); // YYYYMMDD/YYYYMMDD
+            params.append('details', description + "\n\n(Generated by AhMi Growth App)");
+            params.append('sf', 'true');
+            params.append('output', 'xml');
             
-            // UI Button State
-            const btnId = type === 'progress' ? 'btn-progress' : 'btn-rescue';
-            const btn = document.getElementById(btnId);
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<div class="loader"></div> <span class="text-xs">生成中...</span>';
-            btn.disabled = true;
-
-            let prompt = "";
-            let title = "";
-
-            if (type === 'progress') {
-                title = "📈 双语生长进度报告 / Dual-Language Progress Report";
-                prompt = `
-                    Role: Senior Pediatric Growth Specialist.
-                    Child Data: Age ${latest.age}, Height ${latest.height}cm, Weight ${latest.weight}kg.
-                    Target: 185cm (Requires >97th percentile track).
-                    Context: Simpang Ampat, Penang.
-                    Task: Generate a comprehensive growth analysis report.
-                    
-                    CRITICAL OUTPUT FORMAT:
-                    1. **Section 1: 🇨🇳 中文报告** (Detailed analysis, BMI check, percentile check, advice).
-                    2. **Section 2: 🇬🇧 English Report** (Same content translated accurately).
-                    
-                    Style: Professional, Encouraging, Clear Headings, Bullet Points.
-                    Make it look like a formal medical report using Markdown.
-                `;
-            } else if (type === 'rescue') {
-                title = "🚀 快速补救方案 / Quick Rescue Plan";
-                prompt = `
-                    Role: Crisis Growth Intervention Specialist.
-                    Child Data: Age ${latest.age}, Height ${latest.height}cm, Weight ${latest.weight}kg.
-                    Situation: Parents feel growth is lagging/stagnant or weight is issue.
-                    Target: 185cm (Very High Goal).
-                    
-                    Task: Provide a "Catch-Up Growth Strategy" (Rescue Plan).
-                    Focus on: 
-                    1. Immediate Diet Changes (Protein/Calcium loading using Penang food).
-                    2. Sleep Hacks (Deep sleep maximization).
-                    3. High-Intensity Sport bursts.
-                    
-                    CRITICAL OUTPUT FORMAT:
-                    1. **Section 1: 🇨🇳 中文补救方案** (Actionable steps for this week).
-                    2. **Section 2: 🇬🇧 English Rescue Plan**.
-                    
-                    Style: Urgent, Action-oriented, Strict but helpful. Markdown.
-                `;
-            }
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                
-                const data = await response.json();
-                if (data.error) throw new Error(data.error.message);
-                
-                const text = data.candidates[0].content.parts[0].text;
-                
-                // Open Modal with Content
-                openModal(title, text);
-
-            } catch (error) {
-                alert("AI 生成失败: " + error.message);
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
+            return `${baseUrl}&${params.toString()}`;
         }
 
-        // --- MODAL UTILS ---
-        function openModal(title, markdownText) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalBody').innerHTML = marked.parse(markdownText);
-            
-            const modal = document.getElementById('fullScreenModal');
-            modal.classList.add('open');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('fullScreenModal');
-            modal.classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        // Close modal on outside click
-        document.getElementById('fullScreenModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
-
-        // --- OTHER AI FUNCTIONS (Stretch, Diet, Routine) ---
-        async function callGeminiGeneric(prompt, outputContainer, btn) {
-            const apiKey = getApiKey();
-            if(btn) { btn.disabled=true; btn.innerHTML='<div class="loader"></div>'; }
-            outputContainer.classList.remove('hidden');
-            outputContainer.innerHTML = '<div class="loader"></div> AI Thinking...';
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                const data = await response.json();
-                outputContainer.innerHTML = marked.parse(data.candidates[0].content.parts[0].text);
-            } catch (e) { outputContainer.innerHTML = "Error."; }
-            if(btn) { btn.disabled=false; btn.innerHTML='✨ 生成'; }
-        }
-
-        function askStretch(type) {
-            const context = type === 'fun' ? "Fun game based" : "Sore leg relief";
-            const div = document.getElementById('stretchResult');
-            const prompt = `Role: Kids Physio. Child 5.5yr. ${context} stretching advice. Chinese.`;
-            callGeminiGeneric(prompt, div);
-        }
-
-        function generateMealPlan() {
-            const div = document.getElementById('mealContent');
-            document.getElementById('mealPlanResult').classList.remove('hidden');
-            const btn = document.getElementById('btnGenMeal');
-            const prompt = `Role: Nutritionist. Child 5.5yr. Penang food. 1 Day Meal Plan for height. Markdown. Chinese.`;
-            callGeminiGeneric(prompt, div, btn);
-        }
-
-        function generateSchedule(type) {
-            const div = document.getElementById('scheduleResult');
-            const prompt = `Role: Growth Coach. Child 5.5yr. Schedule: ${type}. List format. Chinese.`;
-            callGeminiGeneric(prompt, div);
-        }
-
-        // --- DATA & CHARTS ---
-        function getApiKey() { return localStorage.getItem('gemini_api_key') || DEFAULT_API_KEY; }
-        
+        // --- TRACKER LOGIC ---
         function loadRecords() {
             const stored = localStorage.getItem('ahmi_growth_records');
             records = stored ? JSON.parse(stored) : [{ id: 1, date: '2025-05-01', age: 5.5, height: 110, weight: 18 }];
             renderTable(); updateCharts();
         }
+
         function addRecord() {
             const date = document.getElementById('recordDate').value;
             const h = parseFloat(document.getElementById('recordHeight').value);
             const w = parseFloat(document.getElementById('recordWeight').value);
-            if(!date || !h || !w) return alert('请完整填写');
+            if(!date || !h || !w) return alert('请填写');
             
-            // Simple age calc approx
             const age = (new Date(date) - CHILD_BIRTH_DATE) / (1000 * 60 * 60 * 24 * 365.25);
-            records.push({id:Date.now(), date, age: age.toFixed(1), height:h, weight:w});
-            
-            localStorage.setItem('ahmi_growth_records', JSON.stringify(records));
+            const newRecord = {id:Date.now(), date, age: age.toFixed(1), height:h, weight:w};
+            records.push(newRecord);
+            localStorage.setItem('ahmi_growth_records', JSON.stringify(records)); 
             loadRecords();
+
+            // Generate Sync Link
+            const title = `📏 阿米: ${h}cm / ${w}kg`;
+            const desc = `年龄: ${age.toFixed(1)}岁\nBMI: ${(w/((h/100)**2)).toFixed(1)}\n目标: 185cm`;
+            const link = createGCalLink(title, date, null, desc);
+            
+            // Ask to Sync
+            openGCalModal(link);
         }
+
         function renderTable() {
             const tbody = document.getElementById('recordsTableBody'); tbody.innerHTML='';
             [...records].reverse().forEach(r => {
-                tbody.innerHTML += `<tr class="border-b border-slate-50"><td class="px-3 py-2">${r.date}</td><td class="px-3 py-2 font-bold text-indigo-600">${r.height}cm / ${r.weight}kg</td></tr>`;
+                const title = `📏 阿米: ${r.height}cm / ${r.weight}kg`;
+                const desc = `年龄: ${r.age}岁`;
+                const link = createGCalLink(title, r.date, null, desc);
+                
+                tbody.innerHTML += `
+                <tr class="border-b border-slate-50">
+                    <td class="px-3 py-2">${r.date}</td>
+                    <td class="px-3 py-2 font-bold text-indigo-600">${r.height}cm / ${r.weight}kg</td>
+                    <td class="px-3 py-2 text-right">
+                        <a href="${link}" target="_blank" class="text-green-500 hover:text-green-700 text-lg" title="同步到 Google Calendar">📅</a>
+                    </td>
+                </tr>`;
             });
-        }
-        function initCharts() {
-            const ages = [5,6,7,8,9,10,11,12,13,14];
-            myChart = new Chart(document.getElementById('growthChart'), {
-                type:'line', data:{labels:ages, datasets:[{label:'实测',data:[],borderColor:'#8b5cf6'}, {label:'目标',data:[110,115,122,129,135,141,148,156,166,175],borderColor:'#0ea5e9',borderDash:[5,5]}]},
-                options:{maintainAspectRatio:false}
-            });
-            weightChart = new Chart(document.getElementById('weightChart'), {
-                type:'line', data:{labels:ages, datasets:[{label:'实测',data:[],borderColor:'#f59e0b'}, {label:'标准',data:[18,20,23,25,28,32,36,40,45,50],borderColor:'#10b981',borderDash:[5,5]}]},
-                options:{maintainAspectRatio:false}
-            });
-        }
-        function updateCharts() {
-            if(!myChart) return;
-            myChart.data.datasets[0].data = records.map(r=>r.height); myChart.update();
-            weightChart.data.datasets[0].data = records.map(r=>r.weight); weightChart.update();
         }
 
         // --- HEALTH LOGIC ---
@@ -501,25 +349,87 @@
             if (stored) { sickRecords = JSON.parse(stored); sickRecords.sort((a,b)=>new Date(b.startDate)-new Date(a.startDate)); }
             renderSickTable();
         }
+
         function addSickRecord() {
             const start = document.getElementById('sickStartDate').value;
             const end = document.getElementById('sickEndDate').value;
             const sym = []; document.querySelectorAll('.symptom-checkbox:checked').forEach(c=>sym.push(c.value));
             if(!start || sym.length===0) return alert('请填写');
+            
             sickRecords.push({id:Date.now(), startDate:start, endDate:end||"未康复", symptoms:sym});
             localStorage.setItem('ahmi_sick_records', JSON.stringify(sickRecords)); loadSickRecords();
             document.querySelectorAll('.symptom-checkbox').forEach(c=>c.checked=false);
+
+            // Generate Sync Link
+            const title = `🤒 阿米生病: ${sym.join(',')}`;
+            // If has end date, use it. If not, just start date.
+            // Note: Google Calendar dates range implies END date is exclusive +1 day for visual block, but standard intent works OK usually.
+            const link = createGCalLink(title, start, end || start, "生病记录。请注意休息和营养补充。");
+            openGCalModal(link);
         }
+
         function renderSickTable() {
             const div = document.getElementById('sickRecordsList'); div.innerHTML='';
             if(sickRecords.length===0) return div.innerHTML='<div class="p-4 text-center text-xs text-slate-400">暂无生病记录</div>';
             sickRecords.forEach(r => {
-                div.innerHTML += `<div class="p-3 border-b border-slate-50 flex justify-between"><div class="text-xs"><b>${r.startDate}</b> <span class="text-slate-400">至</span> ${r.endDate} <br>${r.symptoms.join(', ')}</div><button onclick="deleteSick(${r.id})" class="text-red-300 text-[10px]">×</button></div>`;
+                const title = `🤒 阿米生病: ${r.symptoms.join(',')}`;
+                const link = createGCalLink(title, r.startDate, r.endDate !== "未康复" ? r.endDate : r.startDate, "补传生病记录");
+                
+                div.innerHTML += `
+                <div class="p-3 border-b border-slate-50 flex justify-between items-center">
+                    <div class="text-xs">
+                        <b>${r.startDate}</b> <span class="text-slate-400">至</span> ${r.endDate} <br>
+                        <span class="text-red-500">${r.symptoms.join(', ')}</span>
+                    </div>
+                    <div class="flex gap-3">
+                        <a href="${link}" target="_blank" class="text-green-500 text-lg">📅</a>
+                        <button onclick="deleteSick(${r.id})" class="text-red-300 text-[10px]">×</button>
+                    </div>
+                </div>`;
             });
         }
+
+        // --- OTHER LOGIC (TABS, AI, CHARTS) ---
+        function switchMainTab(tabId) {
+            document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById('nav-' + tabId).classList.add('active');
+            ['tracker', 'health', 'stretch', 'ai-diet', 'routine'].forEach(id => document.getElementById('view-' + id).classList.add('hidden'));
+            document.getElementById('view-' + tabId).classList.remove('hidden');
+            if(tabId === 'tracker') { if(myChart) myChart.resize(); if(weightChart) weightChart.resize(); }
+        }
+        function getApiKey() { return localStorage.getItem('gemini_api_key') || DEFAULT_API_KEY; }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+        function openModal(title, text) { document.getElementById('modalTitle').innerText = title; document.getElementById('modalBody').innerHTML = marked.parse(text); document.getElementById('fullScreenModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
+        async function askGeminiReport(type) {
+            if (records.length === 0) return alert("请先录入身高体重数据");
+            const apiKey = getApiKey();
+            const latest = records[records.length - 1];
+            const btnId = type === 'progress' ? 'btn-progress' : 'btn-rescue';
+            const btn = document.getElementById(btnId);
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<div class="loader"></div>'; btn.disabled = true;
+            let prompt = ""; let title = "";
+            if (type === 'progress') { title = "📈 双语生长进度报告 / Dual-Language Progress Report"; prompt = `Role: Pediatric Specialist. Child Age ${latest.age}, Height ${latest.height}cm, Weight ${latest.weight}kg. Target 185cm. Context: Penang. Task: Dual-language report (Chinese & English) analyzing percentile, BMI, and status. Markdown format.`; } 
+            else { title = "🚀 快速补救方案 / Quick Rescue Plan"; prompt = `Role: Growth Crisis Specialist. Child Age ${latest.age}, Height ${latest.height}cm, Weight ${latest.weight}kg. Target 185cm. Situation: Lagging growth. Task: Dual-language (Chinese & English) rescue plan focusing on Penang diet, sleep, and HIIT sports. Markdown format.`; }
+            try { const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) }); const data = await response.json(); openModal(title, data.candidates[0].content.parts[0].text); } catch (e) { alert("AI Error"); } finally { btn.innerHTML = originalText; btn.disabled = false; }
+        }
+        function initCharts() {
+            const ages = [5,6,7,8,9,10,11,12,13,14];
+            myChart = new Chart(document.getElementById('growthChart'), { type:'line', data:{labels:ages, datasets:[{label:'实测',data:[],borderColor:'#8b5cf6'}, {label:'目标',data:[110,115,122,129,135,141,148,156,166,175],borderColor:'#0ea5e9',borderDash:[5,5]}]}, options:{maintainAspectRatio:false} });
+            weightChart = new Chart(document.getElementById('weightChart'), { type:'line', data:{labels:ages, datasets:[{label:'实测',data:[],borderColor:'#f59e0b'}, {label:'标准',data:[18,20,23,25,28,32,36,40,45,50],borderColor:'#10b981',borderDash:[5,5]}]}, options:{maintainAspectRatio:false} });
+        }
+        function updateCharts() { if(!myChart)return; myChart.data.datasets[0].data=records.map(r=>r.height); myChart.update(); weightChart.data.datasets[0].data=records.map(r=>r.weight); weightChart.update(); }
         function deleteSick(id) { sickRecords=sickRecords.filter(r=>r.id!==id); localStorage.setItem('ahmi_sick_records', JSON.stringify(sickRecords)); renderSickTable(); }
         function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
         function saveApiKey() { localStorage.setItem('gemini_api_key', document.getElementById('apiKeyInput').value); toggleSettings(); }
+        // Generic AI
+        async function callGeminiGeneric(prompt, outputContainer, btn) {
+            const apiKey = getApiKey(); if(btn) { btn.disabled=true; btn.innerHTML='<div class="loader"></div>'; } outputContainer.classList.remove('hidden'); outputContainer.innerHTML = 'AI Thinking...';
+            try { const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) }); const data = await response.json(); outputContainer.innerHTML = marked.parse(data.candidates[0].content.parts[0].text); } catch (e) { outputContainer.innerHTML = "Error."; } if(btn) { btn.disabled=false; btn.innerHTML='✨ 生成'; }
+        }
+        function askStretch(type) { callGeminiGeneric(`Role: Kids Physio. Child 5.5yr. ${type==='fun'?'Fun game':'Sore relief'} stretching. Chinese.`, document.getElementById('stretchResult')); }
+        function generateMealPlan() { callGeminiGeneric(`Role: Nutritionist. Child 5.5yr. Penang food. Meal Plan. Chinese.`, document.getElementById('mealContent'), document.getElementById('btnGenMeal')); document.getElementById('mealPlanResult').classList.remove('hidden'); }
+        function generateSchedule(type) { callGeminiGeneric(`Role: Coach. Child 5.5yr. Schedule ${type}. Chinese.`, document.getElementById('scheduleResult')); document.getElementById('scheduleResult').classList.remove('hidden'); }
     </script>
 </body>
 </html>
